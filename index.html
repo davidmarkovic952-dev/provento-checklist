@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Besplatna Analiza Sajta — Provento Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  :root {
+    --bg: #06090F;
+    --surface: #0C1119;
+    --surface2: #111827;
+    --border: #182030;
+    --border2: #1E2D45;
+    --accent: #4F8EF7;
+    --accent2: #00E5A0;
+    --red: #FF4D4D;
+    --yellow: #FFB547;
+    --text: #EDF2FC;
+    --text2: #A8B8D0;
+    --muted: #556070;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999; opacity: 0.5;
+  }
+
+  .blob {
+    position: fixed; border-radius: 50%;
+    pointer-events: none; z-index: 0; filter: blur(90px);
+  }
+  .blob-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(79,142,247,0.10) 0%, transparent 65%);
+    top: -150px; right: -150px;
+    animation: blobMove 12s ease-in-out infinite;
+  }
+  .blob-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,229,160,0.07) 0%, transparent 65%);
+    bottom: -100px; left: -100px;
+    animation: blobMove 15s ease-in-out infinite reverse;
+  }
+  @keyframes blobMove {
+    0%,100% { transform: translate(0,0); }
+    50% { transform: translate(30px,-25px); }
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 64px;
+    background: rgba(6,9,15,0.88);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 4px;
+    color: var(--text); text-decoration: none;
+  }
+  .logo span { color: var(--accent); }
+  .nav-back {
+    font-size: 0.82rem; color: var(--text2);
+    text-decoration: none; display: flex; align-items: center; gap: 6px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--accent); }
+
+  /* WRAPPER */
+  .wrapper {
+    position: relative; z-index: 1;
+    max-width: 720px; margin: 0 auto;
+    padding: 100px 24px 80px;
+  }
+
+  /* HEADER */
+  .page-header {
+    text-align: center; margin-bottom: 56px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .header-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(79,142,247,0.08);
+    border: 1px solid rgba(79,142,247,0.2);
+    color: var(--accent);
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 7px 16px; border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .header-badge-dot {
+    width: 7px; height: 7px; background: var(--accent2);
+    border-radius: 50%; animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.4; transform:scale(1.6); }
+  }
+
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    letter-spacing: 1.5px; line-height: 0.95;
+    margin-bottom: 16px;
+  }
+  .page-title .blue { color: var(--accent); }
+  .page-title .green { color: var(--accent2); }
+
+  .page-sub {
+    color: var(--text2); font-size: 1rem; line-height: 1.7;
+    max-width: 500px; margin: 0 auto;
+  }
+
+  /* PROGRES BAR */
+  .progress-wrap {
+    margin-bottom: 40px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+  .progress-meta {
+    display: flex; justify-content: space-between;
+    font-size: 0.78rem; color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .progress-meta span { color: var(--accent); font-weight: 600; }
+  .progress-bar {
+    height: 4px; background: var(--border2);
+    border-radius: 100px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 100px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+  }
+
+  /* FORMA */
+  .form-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  /* KORAK — lični podaci */
+  .step-info {
+    padding: 40px;
+  }
+
+  .step-label {
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .step-label::after {
+    content: ''; flex: 0 0 30px; height: 1px;
+    background: var(--accent); opacity: 0.35;
+  }
+
+  .step-title-sm {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; letter-spacing: 1px;
+    margin-bottom: 6px; color: var(--text);
+  }
+  .step-desc {
+    font-size: 0.88rem; color: var(--muted); margin-bottom: 28px; line-height: 1.6;
+  }
+
+  .field-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+
+  .field {
+    flex: 1; min-width: 200px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .field label {
+    font-size: 0.78rem; font-weight: 600;
+    color: var(--text2); letter-spacing: 0.5px;
+  }
+  .field input {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.93rem; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,142,247,0.1);
+  }
+  .field input::placeholder { color: var(--muted); }
+
+  /* SEPARATOR */
+  .section-sep {
+    border: none; border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* PITANJA */
+  .questions-block { padding: 0; }
+
+  .question-item {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 20px;
+    padding: 22px 40px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .question-item:last-child { border-bottom: none; }
+  .question-item:hover { background: rgba(255,255,255,0.015); }
+
+  .q-left { display: flex; align-items: flex-start; gap: 16px; flex: 1; }
+
+  .q-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 1px;
+    color: rgba(79,142,247,0.25); flex-shrink: 0;
+    line-height: 1.2; margin-top: 2px;
+  }
+
+  .q-content {}
+  .q-text {
+    font-size: 0.95rem; font-weight: 600;
+    color: var(--text); line-height: 1.4; margin-bottom: 4px;
+  }
+  .q-hint { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+  /* Da/Ne dugmad */
+  .q-btns { display: flex; gap: 8px; flex-shrink: 0; }
+
+  .q-btn {
+    width: 64px; height: 38px;
+    border-radius: 8px; border: 1px solid var(--border2);
+    background: transparent; color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .q-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .q-btn.da.active {
+    background: rgba(0,229,160,0.12);
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+  .q-btn.ne.active {
+    background: rgba(255,77,77,0.1);
+    border-color: #FF4D4D;
+    color: #ff7070;
+  }
+
+  /* SUBMIT */
+  .submit-block {
+    padding: 32px 40px;
+    border-top: 1px solid var(--border);
+    background: rgba(255,255,255,0.01);
+  }
+
+  .btn-submit {
+    width: 100%;
+    background: linear-gradient(135deg, #4F8EF7, #2558D9);
+    color: #fff; border: none;
+    padding: 17px 28px; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.3px;
+    position: relative; overflow: hidden;
+    transition: all 0.3s;
+    box-shadow: 0 8px 28px rgba(79,142,247,0.3);
+  }
+  .btn-submit::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(79,142,247,0.45); }
+  .btn-submit:hover::before { opacity: 1; }
+  .btn-submit:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .submit-note {
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    font-size: 0.76rem; color: var(--muted); margin-top: 12px;
+  }
+
+  .msg-error {
+    display: none;
+    margin-bottom: 14px;
+    background: rgba(255,77,77,0.07);
+    border: 1px solid rgba(255,77,77,0.2);
+    border-radius: 8px; padding: 12px 16px;
+    color: #ff7070; font-size: 0.84rem; line-height: 1.5;
+  }
+  .msg-error.show { display: block; animation: fadeUp 0.3s ease; }
+
+  /* REZULTAT EKRAN */
+  .result-screen {
+    display: none;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease both;
+  }
+  .result-screen.show { display: block; }
+
+  .result-header {
+    padding: 40px 40px 32px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .result-score-circle {
+    width: 100px; height: 100px; border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    border: 3px solid;
+    position: relative;
+  }
+  .result-score-circle .big-num {
+    font-size: 2.8rem; letter-spacing: 1px; line-height: 1;
+  }
+  .result-score-circle .of { font-size: 0.85rem; opacity: 0.6; }
+
+  .result-score-circle.lose {
+    border-color: rgba(255,77,77,0.5);
+    color: #ff7070;
+    background: rgba(255,77,77,0.06);
+  }
+  .result-score-circle.ok {
+    border-color: rgba(255,181,71,0.5);
+    color: var(--yellow);
+    background: rgba(255,181,71,0.06);
+  }
+  .result-score-circle.good {
+    border-color: rgba(0,229,160,0.5);
+    color: var(--accent2);
+    background: rgba(0,229,160,0.06);
+  }
+
+  .result-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .result-sub { font-size: 0.9rem; color: var(--text2); line-height: 1.6; max-width: 420px; margin: 0 auto; }
+
+  .result-items { padding: 32px 40px; }
+  .result-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+  }
+  .result-item:last-child { border-bottom: none; }
+
+  .result-icon {
+    width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; margin-top: 2px;
+  }
+  .result-icon.pass { background: rgba(0,229,160,0.12); color: var(--accent2); border: 1px solid rgba(0,229,160,0.25); }
+  .result-icon.fail { background: rgba(255,77,77,0.1); color: #ff7070; border: 1px solid rgba(255,77,77,0.2); }
+
+  .result-item-text {}
+  .result-item-title { font-size: 0.92rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .result-item-desc { font-size: 0.8rem; color: var(--text2); line-height: 1.55; }
+
+  .result-cta {
+    margin: 0 40px 40px;
+    background: linear-gradient(135deg, rgba(79,142,247,0.08), rgba(0,229,160,0.05));
+    border: 1px solid rgba(79,142,247,0.2);
+    border-radius: 14px; padding: 28px;
+    text-align: center;
+  }
+  .result-cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .result-cta p { font-size: 0.88rem; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
+
+  .btn-ig {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+    color: #fff; text-decoration: none;
+    padding: 13px 28px; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 700;
+    transition: all 0.3s; letter-spacing: 0.3px;
+  }
+  .btn-ig:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(131,58,180,0.35); }
+
+  .result-mejl-info {
+    text-align: center; padding: 0 40px 32px;
+    font-size: 0.82rem; color: var(--muted); line-height: 1.6;
+  }
+  .result-mejl-info strong { color: var(--accent2); }
+
+  /* ANIMACIJE */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    nav { padding: 0 20px; }
+    .wrapper { padding: 90px 16px 60px; }
+    .step-info { padding: 28px 20px; }
+    .question-item { padding: 18px 20px; flex-direction: column; align-items: flex-start; gap: 14px; }
+    .q-btns { width: 100%; }
+    .q-btn { flex: 1; }
+    .submit-block { padding: 24px 20px; }
+    .result-header { padding: 28px 20px 24px; }
+    .result-items { padding: 24px 20px; }
+    .result-cta { margin: 0 20px 28px; padding: 20px; }
+    .result-mejl-info { padding: 0 20px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">PROVENTO<span>.</span></a>
+  <a href="index.html" class="nav-back">← Nazad</a>
+</nav>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="header-badge">
+      <div class="header-badge-dot"></div>
+      Besplatno · 2 minuta · Bez obaveza
+    </div>
+    <h1 class="page-title">
+      ANALIZIRAJ<br>
+      SVOJ <span class="blue">SAJT</span><span class="green">.</span>
+    </h1>
+    <p class="page-sub">Odgovori na 5 pitanja i dobijaš personalizovanu analizu direktno na mejl — šta radi, a šta te košta klijente.</p>
+  </div>
+
+  <!-- PROGRES -->
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="progressText">Pitanje 0 od 5</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- FORMA -->
+  <div class="form-card" id="formCard">
+
+    <!-- Lični podaci -->
+    <div class="step-info">
+      <div class="step-label">Korak 1</div>
+      <div class="step-title-sm">TVOJI PODACI</div>
+      <p class="step-desc">Potrebno za slanje personalizovane analize na tvoj mejl.</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Ime i prezime</label>
+          <input type="text" id="imeInput" placeholder="npr. Marko Nikolić" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label>Mejl adresa</label>
+          <input type="email" id="mejlInput" placeholder="tvoj@mejl.com" autocomplete="off" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Adresa sajta (opciono)</label>
+          <input type="text" id="sajtInput" placeholder="npr. www.tvojbiznis.rs" autocomplete="off" />
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-sep">
+
+    <!-- Pitanja -->
+    <div class="questions-block">
+
+      <div class="question-item" data-q="1">
+        <div class="q-left">
+          <div class="q-num">01</div>
+          <div class="q-content">
+            <div class="q-text">Imaš li jasan poziv na akciju (dugme) na vrhu sajta?</div>
+            <div class="q-hint">npr. "Rezerviši termin", "Pozovi nas", "Pošalji upit" — vidljivo odmah bez skrolovanja</div>
+          </div>
+        </div>
+        <div class="q-btns">
+          <button class="q-btn da" onclick="odgovori(1, 'da', this)">DA</button>
+          <button class="q-btn ne" onclick="odgovori(1, 'ne', this)">NE</button>
+        </div>
+      </div>
+
+      <div class="question-item" data-q="2">
+        <div class="q-left">
+          <div class="q-num">02</div>
+          <div class="q-content">
+            <div class="q-text">Da li tvoj sajt dobro izgleda i funkcioniše na mobilnom telefonu?</div>
+            <div class="q-hint">Otvori sajt na telefonu — da li je sve čitljivo i lako za korišćenje?</div>
+          </div>
+        </div>
+        <div class="q-btns">
+          <button class="q-btn da" onclick="odgovori(2, 'da', this)">DA</button>
+          <button class="q-btn ne" onclick="odgovori(2, 'ne', this)">NE</button>
+        </div>
+      </div>
+
+      <div class="question-item" data-q="3">
+        <div class="q-left">
+          <div class="q-num">03</div>
+          <div class="q-content">
+            <div class="q-text">Da li su Google recenzije vidljive direktno na tvom sajtu?</div>
+            <div class="q-hint">Recenzije na sajtu grade poverenje kod novih posetilaca koji te ne poznaju</div>
+          </div>
+        </div>
+        <div class="q-btns">
+          <button class="q-btn da" onclick="odgovori(3, 'da', this)">DA</button>
+          <button class="q-btn ne" onclick="odgovori(3, 'ne', this)">NE</button>
+        </div>
+      </div>
+
+      <div class="question-item" data-q="4">
+        <div class="q-left">
+          <div class="q-num">04</div>
+          <div class="q-content">
+            <div class="q-text">Da li kontakt forma na tvom sajtu stvarno funkcioniše?</div>
+            <div class="q-hint">Pošalji test poruku sebi — da li stigne? Da li dobijaju potvrdu da je poruka primljena?</div>
+          </div>
+        </div>
+        <div class="q-btns">
+          <button class="q-btn da" onclick="odgovori(4, 'da', this)">DA</button>
+          <button class="q-btn ne" onclick="odgovori(4, 'ne', this)">NE</button>
+        </div>
+      </div>
+
+      <div class="question-item" data-q="5">
+        <div class="q-left">
+          <div class="q-num">05</div>
+          <div class="q-content">
+            <div class="q-text">Da li se tvoj sajt učitava za manje od 3 sekunde?</div>
+            <div class="q-hint">Proveri besplatno na pagespeed.web.dev — upiši adresu sajta i pogledaj rezultat</div>
+          </div>
+        </div>
+        <div class="q-btns">
+          <button class="q-btn da" onclick="odgovori(5, 'da', this)">DA</button>
+          <button class="q-btn ne" onclick="odgovori(5, 'ne', this)">NE</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-block">
+      <div class="msg-error" id="errorMsg">Popuni ime, mejl i odgovori na sva pitanja.</div>
+      <button class="btn-submit" id="submitBtn" onclick="posaljiAnalizu()">
+        POŠALJI MI ANALIZU SAJTA →
+      </button>
+      <p class="submit-note">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Bez spama. Analiza stiže za par sekundi na tvoj mejl.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- REZULTAT EKRAN -->
+  <div class="result-screen" id="resultScreen"></div>
+
+</div>
+
+<script>
+  emailjs.init("LMjiKvCKjALetUyrV");
+
+  // Stanje odgovora
+  const odgovori_mapa = {};
+
+  const pitanja = [
+    {
+      naziv: "Jasan poziv na akciju (CTA)",
+      savet_da: "Odlično! Jasan CTA je osnova svakog sajta koji konvertuje — posetilac odmah zna šta da uradi.",
+      savet_ne: "Ovo je kritično. Bez jasnog CTA-a posetilac ne zna šta da uradi — i odlazi. Dodaj vidljivo dugme na vrh svake stranice."
+    },
+    {
+      naziv: "Mobilna verzija sajta",
+      savet_da: "Super! Mobilna optimizacija ti obezbeđuje da ne gubiš 70% posetilaca koji dolaze sa telefona.",
+      savet_ne: "Problem! Više od 70% tvojih posetilaca dolazi sa telefona. Ako sajt ne radi na mobilnom — gubiš većinu potencijalnih klijenata."
+    },
+    {
+      naziv: "Google recenzije na sajtu",
+      savet_da: "Izvrsno! Recenzije direktno na sajtu grade poverenje i povećavaju broj klijenata koji se odluče da te kontaktiraju.",
+      savet_ne: "Propuštaš priliku. Imaš recenzije na Google-u, ali ih niko ne vidi na sajtu. Dodaj widget sa recenzijama na početnu stranu."
+    },
+    {
+      naziv: "Kontakt forma koja radi",
+      savet_da: "Perfektno! Forma koja radi i šalje potvrdu znači da ne gubiš nijednu poruku od potencijalnog klijenta.",
+      savet_ne: "Hitno proveriti! Ako forma ne radi, gubiš klijente koji su već odlučili da te kontaktiraju. Svaka propuštena poruka = propušten klijent."
+    },
+    {
+      naziv: "Brzina učitavanja ispod 3 sekunde",
+      savet_da: "Bravo! Brz sajt znači da posetilac ne odlazi pre nego što ga vidi — i Google te bolje rangira.",
+      savet_ne: "Ozbiljan problem. Svaka sekunda kašnjenja smanjuje konverzije za 7%. Kompresuj slike i ukloni nepotrebne pluginove."
+    }
+  ];
+
+  function odgovori(broj, vrednost, dugme) {
+    odgovori_mapa[broj] = vrednost;
+
+    // Ukloni aktivno stanje sa oba dugmeta u ovom pitanju
+    const item = dugme.closest('.question-item');
+    item.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+    dugme.classList.add('active');
+
+    // Ažuriraj progres
+    const popunjeno = Object.keys(odgovori_mapa).length;
+    const pct = Math.round((popunjeno / 5) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `Pitanje ${popunjeno} od 5`;
+    document.getElementById('progressPct').textContent = pct + '%';
+  }
+
+  function posaljiAnalizu() {
+    const ime = document.getElementById('imeInput').value.trim();
+    const mejl = document.getElementById('mejlInput').value.trim();
+    const sajt = document.getElementById('sajtInput').value.trim() || 'Nije naveden';
+    const btn = document.getElementById('submitBtn');
+    const greska = document.getElementById('errorMsg');
+
+    greska.classList.remove('show');
+
+    // Validacija
+    if (!ime || !mejl || !mejl.includes('@')) {
+      greska.textContent = 'Upiši ispravno ime i mejl adresu.';
+      greska.classList.add('show');
+      return;
+    }
+
+    if (Object.keys(odgovori_mapa).length < 5) {
+      greska.textContent = 'Odgovori na sva pitanja pre slanja.';
+      greska.classList.add('show');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Šaljem analizu...';
+
+    // Izračunaj rezultat
+    let tacnih = 0;
+    Object.values(odgovori_mapa).forEach(v => { if (v === 'da') tacnih++; });
+
+    // Napravi tekst analize za mejl
+    let analizaTekst = '';
+    let sviOdgovori = '';
+    pitanja.forEach((p, i) => {
+      const odg = odgovori_mapa[i + 1];
+      const status = odg === 'da' ? '✅ DA' : '❌ NE';
+      analizaTekst += `${status} — ${p.naziv}\n${odg === 'da' ? p.savet_da : p.savet_ne}\n\n`;
+      sviOdgovori += `${i + 1}. ${p.naziv}: ${odg.toUpperCase()}\n`;
+    });
+
+    // Odredi ocenu i preporuku
+    let ocena, preporuka;
+    if (tacnih <= 2) {
+      ocena = `${tacnih}/5 — Kritično ⚠️`;
+      preporuka = `Tvoj sajt trenutno aktivno gubi klijente svaki dan. Od 5 ključnih elemenata, samo ${tacnih} su ispravni. Ovo nije nešto što možeš odlagati — svaki dan bez popravki znači propuštene klijente i prihod.\n\nPreporučujemo hitnu intervenciju. Napiši nam "HOĆU" i besplatno analiziramo tvoj sajt detaljno.`;
+    } else if (tacnih <= 4) {
+      ocena = `${tacnih}/5 — Ima prostora 📈`;
+      preporuka = `Dobar si, ali ostavljaš novac na stolu. Imaš ${tacnih} od 5 elemenata — što znači da ${5 - tacnih} ${5 - tacnih === 1 ? 'element aktivno košta' : 'elementa aktivno koštaju'} klijente. Mala poboljšanja mogu značajno povećati broj klijenata koji te kontaktiraju.\n\nOdgovori sa "ANALIZA" i pokazaćemo ti tačno šta i kako da popraviš.`;
+    } else {
+      ocena = `5/5 — Odličan si! 🏆`;
+      preporuka = `Bravo! Tvoj sajt ispunjava sve ključne uslove za privlačenje klijenata. Sada je pravo vreme da se fokusiraš na optimizaciju i skaliranje — da što više potencijalnih klijenata pronađe tvoj sajt.\n\nAko te zanima sledeći nivo — SEO, reklame ili redesajn — odgovori na ovaj mejl i razgovaramo.`;
+    }
+
+    // Pošalji mejl klijentu
+    const params1 = {
+      ime: ime,
+      to_email: mejl,
+      email: mejl,
+      analiza: analizaTekst,
+      rezultat: ocena,
+      preporuka: preporuka
+    };
+
+    // Pošalji notifikaciju meni
+    const params2 = {
+      ime: ime,
+      mejl_klijenta: mejl,
+      to_email: 'davidmarkovic952@gmail.com',
+      email: 'davidmarkovic952@gmail.com',
+      sajt: sajt,
+      svi_odgovori: sviOdgovori,
+      rezultat: ocena
+    };
+
+    Promise.all([
+      emailjs.send("service_qqybrep", "template_2zn1x1j", params1),
+      emailjs.send("service_qqybrep", "template_rr3xhym", params2)
+    ]).then(() => {
+      prikaziRezultat(ime, mejl, tacnih);
+    }).catch((err) => {
+      btn.disabled = false;
+      btn.textContent = 'POŠALJI MI ANALIZU SAJTA →';
+      greska.textContent = 'Nešto je pošlo naopako. Pokušaj ponovo.';
+      greska.classList.add('show');
+      console.error(err);
+    });
+  }
+
+  function prikaziRezultat(ime, mejl, tacnih) {
+    // Sakrij formu
+    document.getElementById('formCard').style.display = 'none';
+    document.getElementById('progressWrap');
+
+    // Odredi klasu rezultata
+    let klasa, naslov, opis;
+    if (tacnih <= 2) {
+      klasa = 'lose';
+      naslov = 'POTREBNA INTERVENCIJA';
+      opis = `${ime}, tvoj sajt trenutno gubi klijente svaki dan. Pogledaj šta treba popraviti odmah.`;
+    } else if (tacnih <= 4) {
+      klasa = 'ok';
+      naslov = 'MOŽE BOLJE';
+      opis = `${ime}, dobar si ali ima prostora za poboljšanje. Evo konkretno šta možeš popraviti.`;
+    } else {
+      klasa = 'good';
+      naslov = 'ODLIČAN POSAO!';
+      opis = `${ime}, tvoj sajt ispunjava sve ključne uslove. Vreme je za sledeći nivo.`;
+    }
+
+    // Napravi HTML rezultata
+    let itemsHtml = '';
+    pitanja.forEach((p, i) => {
+      const odg = odgovori_mapa[i + 1];
+      const prolaz = odg === 'da';
+      itemsHtml += `
+        <div class="result-item">
+          <div class="result-icon ${prolaz ? 'pass' : 'fail'}">${prolaz ? '✓' : '✗'}</div>
+          <div class="result-item-text">
+            <div class="result-item-title">${p.naziv}</div>
+            <div class="result-item-desc">${prolaz ? p.savet_da : p.savet_ne}</div>
+          </div>
+        </div>
+      `;
+    });
+
+    const screen = document.getElementById('resultScreen');
+    screen.innerHTML = `
+      <div class="result-header">
+        <div class="result-score-circle ${klasa}">
+          <div class="big-num">${tacnih}</div>
+          <div class="of">od 5</div>
+        </div>
+        <div class="result-title">${naslov}</div>
+        <p class="result-sub">${opis}</p>
+      </div>
+      <div class="result-items">${itemsHtml}</div>
+      <div class="result-cta">
+        <div class="result-cta-title">HOĆEŠ DA POPRAVIMO OVO ZA TEBE?</div>
+        <p>Napiši nam na Instagramu — besplatno analiziramo tvoj sajt i kažemo ti tačno šta i kako da popraviš. Bez obaveza.</p>
+        <a href="https://instagram.com/provento.solutions" target="_blank" class="btn-ig">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          Piši nam na Instagram
+        </a>
+      </div>
+      <div class="result-mejl-info">
+        Detaljna analiza je poslata na <strong>${mejl}</strong><br>
+        Proveri inbox i spam folder — stiže za par sekundi.
+      </div>
+    `;
+
+    screen.classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
