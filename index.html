@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Provento Solutions — Besplatna Čeklista</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  :root {
+    --bg: #06090F;
+    --surface: #0C1119;
+    --surface2: #111827;
+    --border: #182030;
+    --border2: #1E2D45;
+    --accent: #4F8EF7;
+    --accent2: #00E5A0;
+    --accent-glow: rgba(79,142,247,0.35);
+    --red: #FF4D4D;
+    --green: #00E5A0;
+    --yellow: #FFB547;
+    --text: #EDF2FC;
+    --text2: #A8B8D0;
+    --muted: #556070;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+    line-height: 1.65;
+  }
+
+  /* ── TEKSTURA ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.5;
+  }
+
+  /* ── SVETLOSNI EFEKTI ── */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(80px);
+  }
+  .blob-1 {
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(79,142,247,0.10) 0%, transparent 65%);
+    top: -200px; right: -200px;
+    animation: blobMove 12s ease-in-out infinite;
+  }
+  .blob-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,229,160,0.07) 0%, transparent 65%);
+    bottom: -150px; left: -100px;
+    animation: blobMove 15s ease-in-out infinite reverse;
+  }
+  .blob-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(79,142,247,0.06) 0%, transparent 65%);
+    top: 60%; left: 40%;
+    animation: blobMove 9s ease-in-out infinite 3s;
+  }
+  @keyframes blobMove {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(40px,-30px) scale(1.05); }
+    66% { transform: translate(-20px,40px) scale(0.97); }
+  }
+
+  /* ── NAVIGACIJA ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px;
+    height: 68px;
+    background: rgba(6,9,15,0.85);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.45rem;
+    letter-spacing: 4px;
+    color: var(--text);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 2px;
+  }
+  .logo-dot { color: var(--accent); font-size: 2rem; line-height: 0; position: relative; top: 4px; }
+
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+
+  .nav-link {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-link:hover { color: var(--text); }
+
+  .btn-nav {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 9px 22px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+  }
+  .btn-nav:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 130px 48px 80px;
+  }
+
+  /* Leva strana */
+  .hero-left {}
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(79,142,247,0.08);
+    border: 1px solid rgba(79,142,247,0.2);
+    color: var(--accent);
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: 100px;
+    margin-bottom: 30px;
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .eyebrow-dot {
+    width: 7px; height: 7px;
+    background: var(--accent2);
+    border-radius: 50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.4; transform:scale(1.6); }
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.8rem, 5.5vw, 6rem);
+    line-height: 0.93;
+    letter-spacing: 1.5px;
+    margin-bottom: 26px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+  h1 .blue { color: var(--accent); }
+  h1 .green { color: var(--accent2); }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--text2);
+    line-height: 1.75;
+    max-width: 460px;
+    margin-bottom: 38px;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+  .hero-desc strong { color: var(--text); font-weight: 600; }
+
+  /* Forma */
+  .form-block { animation: fadeUp 0.5s ease 0.3s both; }
+
+  .input-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+
+  .inp {
+    flex: 1; min-width: 180px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 15px 18px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .inp:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,142,247,0.12);
+  }
+  .inp::placeholder { color: var(--muted); }
+
+  .btn-cta {
+    width: 100%;
+    background: linear-gradient(135deg, #4F8EF7 0%, #2558D9 100%);
+    color: #fff;
+    border: none;
+    padding: 17px 28px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.97rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    position: relative; overflow: hidden;
+    transition: all 0.3s;
+  }
+  .btn-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(79,142,247,0.45); }
+  .btn-cta:hover::before { opacity: 1; }
+  .btn-cta:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .form-privacy {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 0.76rem; color: var(--muted);
+    margin-top: 12px;
+  }
+  .form-privacy svg { flex-shrink: 0; }
+
+  .msg-success {
+    display: none;
+    margin-top: 12px;
+    background: rgba(0,229,160,0.07);
+    border: 1px solid rgba(0,229,160,0.25);
+    border-radius: 10px;
+    padding: 16px 20px;
+    color: var(--accent2);
+    font-size: 0.9rem; font-weight: 500;
+    line-height: 1.5;
+  }
+  .msg-success.show { display: block; animation: fadeUp 0.35s ease; }
+
+  .msg-error {
+    display: none;
+    margin-top: 10px;
+    background: rgba(255,77,77,0.07);
+    border: 1px solid rgba(255,77,77,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #ff7070;
+    font-size: 0.82rem;
+  }
+  .msg-error.show { display: block; }
+
+  /* Hero social proof */
+  .hero-proof {
+    display: flex; align-items: center; gap: 20px;
+    margin-top: 28px;
+    animation: fadeUp 0.5s ease 0.4s both;
+    flex-wrap: wrap;
+  }
+  .proof-avatars {
+    display: flex;
+  }
+  .proof-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid var(--bg);
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-weight: 700; color: #fff;
+    margin-left: -8px;
+  }
+  .proof-avatar:first-child { margin-left: 0; }
+  .proof-text { font-size: 0.8rem; color: var(--text2); line-height: 1.4; }
+  .proof-text strong { color: var(--text); }
+
+  /* Desna strana — vizuelni deo */
+  .hero-right {
+    position: relative;
+    animation: fadeUp 0.6s ease 0.35s both;
+  }
+
+  .mockup-card {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+  }
+
+  .mockup-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .mockup-dots { display: flex; gap: 6px; }
+  .mockup-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .mockup-dot.r { background: #FF5F57; }
+  .mockup-dot.y { background: #FFBD2E; }
+  .mockup-dot.g { background: #28CA41; }
+  .mockup-url {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border-radius: 5px;
+    padding: 5px 12px;
+    font-size: 0.72rem; color: var(--muted);
+    font-family: monospace;
+  }
+
+  .mockup-body { padding: 28px 24px; }
+
+  .mockup-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 1px;
+    color: var(--text); margin-bottom: 18px;
+  }
+
+  .mockup-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .mockup-item:last-child { border-bottom: none; }
+
+  .mockup-check {
+    width: 22px; height: 22px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; flex-shrink: 0; margin-top: 2px;
+  }
+  .mockup-check.pass { background: rgba(0,229,160,0.12); color: var(--accent2); border: 1px solid rgba(0,229,160,0.25); }
+  .mockup-check.fail { background: rgba(255,77,77,0.1); color: #ff7070; border: 1px solid rgba(255,77,77,0.2); }
+
+  .mockup-item-text { font-size: 0.85rem; color: var(--text2); line-height: 1.4; }
+  .mockup-item-text strong { color: var(--text); font-weight: 600; display: block; font-size: 0.88rem; }
+
+  .mockup-score {
+    margin-top: 18px;
+    background: rgba(255,77,77,0.06);
+    border: 1px solid rgba(255,77,77,0.15);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .score-emoji { font-size: 1.5rem; }
+  .score-info { font-size: 0.82rem; color: #ff7070; line-height: 1.5; }
+  .score-info strong { display: block; font-size: 0.9rem; margin-bottom: 2px; }
+
+  /* Floating badge */
+  .float-badge {
+    position: absolute;
+    top: -18px; right: -18px;
+    background: linear-gradient(135deg, var(--accent2), #00b87a);
+    color: #000;
+    font-size: 0.72rem; font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 24px rgba(0,229,160,0.35);
+    animation: floatBadge 3s ease-in-out infinite;
+  }
+  @keyframes floatBadge {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* ── TRAKA SA BROJKAMA ── */
+  .stats-bar {
+    position: relative; z-index: 1;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 48px;
+    display: flex; justify-content: center; gap: 0;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    flex: 1; min-width: 180px;
+    text-align: center;
+    padding: 16px 24px;
+    border-right: 1px solid var(--border);
+  }
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem; letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1; margin-bottom: 6px;
+  }
+  .stat-label { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+
+  /* ── SEKCIJA ČEKLISTA ── */
+  .section {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 100px 48px;
+  }
+
+  .section-head { margin-bottom: 64px; }
+  .section-tag {
+    font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-tag::after {
+    content: ''; flex: 0 0 40px; height: 1px; background: var(--accent); opacity: 0.4;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 4.5vw, 4.2rem);
+    letter-spacing: 1px; line-height: 0.95;
+    margin-bottom: 18px;
+  }
+  .section-title .blue { color: var(--accent); }
+
+  .section-desc {
+    color: var(--text2); font-size: 1rem;
+    max-width: 520px; line-height: 1.7;
+  }
+
+  /* Kartica čekliste */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+  }
+
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .card::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .card:hover { transform: translateY(-5px); border-color: var(--border2); }
+  .card:hover::after { transform: scaleX(1); }
+
+  .card-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem; letter-spacing: 2px;
+    color: rgba(79,142,247,0.1); line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .card-heading {
+    font-size: 1rem; font-weight: 700;
+    color: var(--text); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-icon {
+    width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), #2558D9);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; color: #fff;
+  }
+
+  .card-bad {
+    background: rgba(255,77,77,0.06);
+    border: 1px solid rgba(255,77,77,0.15);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 0.82rem; color: #ff8080; line-height: 1.55;
+    margin-bottom: 10px;
+  }
+  .card-good {
+    background: rgba(0,229,160,0.05);
+    border: 1px solid rgba(0,229,160,0.15);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 0.82rem; color: var(--accent2); line-height: 1.55;
+  }
+
+  /* Tabela rezultata */
+  .results-grid {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .result-card {
+    border-radius: 14px; padding: 28px 24px;
+    border: 1px solid var(--border);
+    text-align: center;
+    background: var(--surface2);
+  }
+  .result-card.bad { border-color: rgba(255,77,77,0.2); background: rgba(255,77,77,0.04); }
+  .result-card.ok { border-color: rgba(255,181,71,0.2); background: rgba(255,181,71,0.04); }
+  .result-card.good { border-color: rgba(0,229,160,0.2); background: rgba(0,229,160,0.04); }
+
+  .result-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem; letter-spacing: 2px;
+    margin-bottom: 8px; line-height: 1;
+  }
+  .result-card.bad .result-score { color: #ff7070; }
+  .result-card.ok .result-score { color: var(--yellow); }
+  .result-card.good .result-score { color: var(--accent2); }
+
+  .result-label { font-size: 0.82rem; color: var(--text2); line-height: 1.55; }
+
+  /* ── KAKO FUNKCIONIŠE ── */
+  .how-section {
+    position: relative; z-index: 1;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 100px 48px;
+  }
+  .how-inner { max-width: 1200px; margin: 0 auto; }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px; margin-top: 60px;
+    position: relative;
+  }
+  .steps-grid::before {
+    content: '';
+    position: absolute;
+    top: 28px; left: calc(16.66% + 16px); right: calc(16.66% + 16px);
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0.3;
+  }
+
+  .step { text-align: center; position: relative; }
+
+  .step-num {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(0,229,160,0.08));
+    border: 1px solid rgba(79,142,247,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem; letter-spacing: 1px; color: var(--accent);
+    margin: 0 auto 20px;
+    position: relative; z-index: 1;
+  }
+
+  .step-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .step-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.65; }
+
+  /* ── CTA DOLE ── */
+  .cta-section {
+    position: relative; z-index: 1;
+    padding: 120px 48px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    width: 800px; height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(79,142,247,0.08) 0%, transparent 65%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .cta-inner { position: relative; max-width: 640px; margin: 0 auto; }
+
+  .cta-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    letter-spacing: 1.5px; line-height: 0.95;
+    margin-bottom: 20px;
+  }
+  .cta-section h2 .blue { color: var(--accent); }
+
+  .cta-section p {
+    color: var(--text2); font-size: 1rem;
+    line-height: 1.7; margin-bottom: 40px; max-width: 460px; margin-left: auto; margin-right: auto;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #4F8EF7, #2558D9);
+    color: #fff;
+    border: none; cursor: pointer;
+    padding: 18px 44px;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 700; letter-spacing: 0.3px;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 8px 32px rgba(79,142,247,0.3);
+  }
+  .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(79,142,247,0.45); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; letter-spacing: 3px; color: var(--text2);
+    text-decoration: none;
+  }
+  .footer-logo span { color: var(--accent); }
+
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--accent); }
+
+  .footer-copy { font-size: 0.78rem; color: var(--muted); }
+
+  /* ── ANIMACIJE ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.on { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVNO ── */
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .hero { grid-template-columns: 1fr; padding: 110px 20px 60px; gap: 40px; }
+    .hero-right { display: none; }
+    .section { padding: 70px 20px; }
+    .stats-bar { padding: 20px; gap: 0; }
+    .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .stat-item:last-child { border-bottom: none; }
+    .results-grid { grid-template-columns: 1fr; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .steps-grid::before { display: none; }
+    .how-section { padding: 70px 20px; }
+    .cta-section { padding: 80px 20px; }
+    footer { padding: 24px 20px; flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- NAVIGACIJA -->
+<nav>
+  <a href="#" class="logo">PROVENTO<span class="logo-dot">.</span></a>
+  <div class="nav-right">
+    <a href="#ceklista" class="nav-link">Čeklista</a>
+    <a href="#kako" class="nav-link">Kako radi</a>
+    <a href="#cta" class="btn-nav">Preuzmi besplatno</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="eyebrow">
+      <div class="eyebrow-dot"></div>
+      Besplatno · Bez obaveza
+    </div>
+
+    <h1>
+      DA LI TVOJ<br>
+      SAJT <span class="blue">DONOSI</span><br>
+      KLIJENTE<span class="green">?</span>
+    </h1>
+
+    <p class="hero-desc">
+      Preuzmi besplatnu čeklistu i otkrij <strong>tačno zašto tvoj sajt ne radi</strong> — i šta konkretno možeš popraviti već danas.
+    </p>
+
+    <div class="form-block">
+      <div class="input-row">
+        <input class="inp" type="text" id="nameInput" placeholder="Tvoje ime" autocomplete="off" />
+        <input class="inp" type="email" id="emailInput" placeholder="Tvoj mejl" autocomplete="off" />
+      </div>
+      <button class="btn-cta" id="submitBtn" onclick="posaljiCeklistu()">
+        POŠALJI MI BESPLATNU ČEKLISTU →
+      </button>
+      <div class="msg-error" id="errorMsg">Upiši ispravno ime i mejl adresu.</div>
+      <div class="msg-success" id="successMsg">
+        ✅ Čeklista je na putu! Proveri inbox (i spam folder) za par sekundi.<br>
+        <span style="font-size:0.82rem; opacity:0.7; font-weight:400;">Hvala što si nam verovao/la — biće ti korisno!</span>
+      </div>
+      <p class="form-privacy">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Bez spama. Samo korisne informacije od Provento Solutions.
+      </p>
+    </div>
+
+    <div class="hero-proof">
+      <div class="proof-avatars">
+        <div class="proof-avatar">MK</div>
+        <div class="proof-avatar">JN</div>
+        <div class="proof-avatar">AS</div>
+        <div class="proof-avatar">+</div>
+      </div>
+      <p class="proof-text"><strong>Lokalni biznisi</strong> već koriste ovu čeklistu<br>za više klijenata svaki mesec.</p>
+    </div>
+  </div>
+
+  <!-- Desna strana — mockup -->
+  <div class="hero-right">
+    <div class="float-badge">✓ Besplatna analiza</div>
+    <div class="mockup-card">
+      <div class="mockup-header">
+        <div class="mockup-dots">
+          <div class="mockup-dot r"></div>
+          <div class="mockup-dot y"></div>
+          <div class="mockup-dot g"></div>
+        </div>
+        <div class="mockup-url">provento.solutions/analiza</div>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-title">ANALIZA TVOG SAJTA</div>
+
+        <div class="mockup-item">
+          <div class="mockup-check fail">✗</div>
+          <div class="mockup-item-text">
+            <strong>Nema jasnog CTA-a</strong>
+            Posetilac ne zna šta da uradi sledeće
+          </div>
+        </div>
+        <div class="mockup-item">
+          <div class="mockup-check fail">✗</div>
+          <div class="mockup-item-text">
+            <strong>Mobilna verzija ne radi</strong>
+            70% posetilaca napušta sajt odmah
+          </div>
+        </div>
+        <div class="mockup-item">
+          <div class="mockup-check pass">✓</div>
+          <div class="mockup-item-text">
+            <strong>Google recenzije su vidljive</strong>
+            Dobro — gradi poverenje kod posetilaca
+          </div>
+        </div>
+        <div class="mockup-item">
+          <div class="mockup-check fail">✗</div>
+          <div class="mockup-item-text">
+            <strong>Kontakt forma ne šalje poruke</strong>
+            Gubiš klijente koji pokušaju da te kontaktiraju
+          </div>
+        </div>
+        <div class="mockup-item">
+          <div class="mockup-check fail">✗</div>
+          <div class="mockup-item-text">
+            <strong>Brzina učitavanja: 7.2s</strong>
+            Trebalo bi ispod 3 sekunde
+          </div>
+        </div>
+
+        <div class="mockup-score">
+          <div class="score-emoji">⚠️</div>
+          <div class="score-info">
+            <strong>Rezultat: 1/5 — Kritično</strong>
+            Tvoj sajt gubi klijente svaki dan. Hitno treba intervencija.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAKA SA BROJKAMA -->
+<div class="stats-bar">
+  <div class="stat-item reveal">
+    <div class="stat-num">80%</div>
+    <div class="stat-label">lokalnih sajtova<br>ne donosi ni jednog klijenta</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">7%</div>
+    <div class="stat-label">manje konverzija<br>za svaku sekundu kašnjenja</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">70%</div>
+    <div class="stat-label">posetilaca dolazi<br>sa mobilnog telefona</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">5</div>
+    <div class="stat-label">konkretnih elemenata<br>koji prave razliku</div>
+  </div>
+</div>
+
+<!-- ČEKLISTA -->
+<section class="section" id="ceklista">
+  <div class="section-head reveal">
+    <div class="section-tag">Šta ćeš dobiti</div>
+    <h2 class="section-title">5 ELEMENATA KOJI<br><span class="blue">PRAVE RAZLIKU</span></h2>
+    <p class="section-desc">Ovo je razlika između sajta koji samo postoji i sajta koji svaki dan automatski dovodi nove klijente.</p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card reveal">
+      <div class="card-num">01</div>
+      <div class="card-heading">
+        <div class="card-icon">→</div>
+        Jasan poziv na akciju
+      </div>
+      <div class="card-bad">❌ Posetilac dođe na sajt i ne zna šta da uradi sledeće — pa jednostavno ode.</div>
+      <div class="card-good">✅ Jedno vidljivo dugme na vrhu: "Rezerviši termin", "Pozovi nas", "Pošalji upit".</div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-num">02</div>
+      <div class="card-heading">
+        <div class="card-icon">📱</div>
+        Mobilna verzija koja radi
+      </div>
+      <div class="card-bad">❌ Na kompjuteru izgleda odlično, ali na telefonu — haos i sitna slova.</div>
+      <div class="card-good">✅ 70%+ posetilaca dolazi sa telefona. Ako im je teško da nađu kontakt — idu kod konkurencije.</div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-num">03</div>
+      <div class="card-heading">
+        <div class="card-icon">⭐</div>
+        Google recenzije na sajtu
+      </div>
+      <div class="card-bad">❌ Imaš odlične recenzije na Google-u, ali ih niko ne vidi kada poseti tvoj sajt.</div>
+      <div class="card-good">✅ Recenzije direktno na početnoj strani = poverenje = više klijenata koji se odluče da te kontaktiraju.</div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-num">04</div>
+      <div class="card-heading">
+        <div class="card-icon">✉</div>
+        Kontakt forma koja stvarno radi
+      </div>
+      <div class="card-bad">❌ Forma postoji, ali poruke idu u spam ili uopšte ne stižu do tebe.</div>
+      <div class="card-good">✅ Automatska potvrda da je poruka primljena. Svaka propuštena poruka je propušten klijent.</div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-num">05</div>
+      <div class="card-heading">
+        <div class="card-icon">⚡</div>
+        Brzina učitavanja ispod 3s
+      </div>
+      <div class="card-bad">❌ Sajt se učitava 6-8 sekundi. Korisnik ode pre nego što ga i vidi.</div>
+      <div class="card-good">✅ Svaka sekunda kašnjenja = 7% manje konverzija. Proveri besplatno na pagespeed.web.dev</div>
+    </div>
+  </div>
+
+  <!-- Rezultati -->
+  <div class="results-grid reveal">
+    <div class="result-card bad">
+      <div class="result-score">0 – 2 ✅</div>
+      <div class="result-label">Tvoj sajt aktivno gubi klijente svaki dan. Potrebna je hitna intervencija.</div>
+    </div>
+    <div class="result-card ok">
+      <div class="result-score">3 – 4 ✅</div>
+      <div class="result-label">Dobro, ali ostavljaš novac na stolu. Ima prostora za poboljšanje.</div>
+    </div>
+    <div class="result-card good">
+      <div class="result-score">5 / 5 ✅</div>
+      <div class="result-label">Odličan si! Samo optimizuj dalje i skaliraj rezultate.</div>
+    </div>
+  </div>
+</section>
+
+<!-- KAKO FUNKCIONIŠE -->
+<div class="how-section" id="kako">
+  <div class="how-inner">
+    <div class="section-head reveal">
+      <div class="section-tag">Proces</div>
+      <h2 class="section-title">KAKO TO <span class="blue">FUNKCIONIŠE</span></h2>
+      <p class="section-desc">Tri koraka do saznanja zašto tvoj sajt ne donosi klijente.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <div class="step-title">Upiši ime i mejl</div>
+        <div class="step-desc">Popuniš formu za nekoliko sekundi. Bez registracije, bez kreditne kartice.</div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <div class="step-title">Dobiješ čeklistu odmah</div>
+        <div class="step-desc">Na tvoj mejl stižu 5 konkretnih elemenata koje odmah možeš proveriti na svom sajtu.</div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <div class="step-title">Vidiš gde gubiš klijente</div>
+        <div class="step-desc">Tačno znaš šta treba popraviti — ili nam pišeš i mi to uradimo umesto tebe.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA DOLE -->
+<div class="cta-section" id="cta">
+  <div class="cta-inner reveal">
+    <h2>NEMAŠ VREMENA<br>DA TO SAM <span class="blue">POPRAVIŠ?</span></h2>
+    <p>Mi to radimo za tebe. Besplatna analiza tvog sajta bez ikakvih obaveza — samo nam piši i javljamo se u roku od 24 sata.</p>
+    <a href="#" class="cta-btn" onclick="document.getElementById('nameInput').focus(); window.scrollTo({top:0,behavior:'smooth'}); return false;">
+      PREUZMI BESPLATNU ČEKLISTU →
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">PROVENTO<span>.</span></a>
+  <div class="footer-links">
+    <a href="https://instagram.com/provento.solutions" target="_blank">Instagram</a>
+    <a href="mailto:davidmarkovic952@gmail.com">Kontakt</a>
+  </div>
+  <p class="footer-copy">© 2025 Provento Solutions</p>
+</footer>
+
+<script>
+  // EmailJS inicijalizacija
+  emailjs.init("LMjiKvCKjALetUyrV");
+
+  function posaljiCeklistu() {
+    const ime = document.getElementById('nameInput').value.trim();
+    const mejl = document.getElementById('emailInput').value.trim();
+    const btn = document.getElementById('submitBtn');
+    const greska = document.getElementById('errorMsg');
+    const uspeh = document.getElementById('successMsg');
+
+    greska.classList.remove('show');
+    uspeh.classList.remove('show');
+
+    if (!ime || !mejl || !mejl.includes('@') || !mejl.includes('.')) {
+      greska.classList.add('show');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Šaljem...';
+
+    emailjs.send("service_qqybrep", "template_qfg77ie", {
+      name: ime,
+      to_email: mejl,
+      email: mejl
+    }).then(() => {
+      btn.textContent = '✅ Poslato!';
+      uspeh.classList.add('show');
+      document.getElementById('nameInput').value = '';
+      document.getElementById('emailInput').value = '';
+    }).catch((err) => {
+      btn.disabled = false;
+      btn.textContent = 'POŠALJI MI BESPLATNU ČEKLISTU →';
+      greska.textContent = 'Nešto je pošlo naopako. Pokušaj ponovo.';
+      greska.classList.add('show');
+      console.error(err);
+    });
+  }
+
+  // Enter taster
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') posaljiCeklistu();
+  });
+
+  // Scroll animacije
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('on'), i * 80);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
